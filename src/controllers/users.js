@@ -1,7 +1,18 @@
 const ApiError = require('../utils/ApiError');
 
-const User = require('../models/user');
+const { User } = require('../database/models');
 const UserSerializer = require('../serializers/UserSerializer');
+
+const findUser = async (where) => {
+  Object.assign(where, { active: true });
+
+  const user = await User.findOne({ where });
+  if (!user) {
+    throw new ApiError('User not found', 400);
+  }
+
+  return user;
+};
 
 const createUser = async (req, res, next) => {
   try {
@@ -63,10 +74,16 @@ const updateUser = async (req, res, next) => {
     if (!user || user.active === false) {
       throw new ApiError('User not found', 400);
     }
-    const updatedUser = await User.update({ where: { id: userId } }, {
-      username, name, email,
-    });
-    res.json(new UserSerializer(updatedUser));
+
+    const userPayload = {
+      username,
+      email,
+      name,
+    };
+
+    Object.assign(user, userPayload);
+    await user.save();
+    res.json(new UserSerializer(user));
   } catch (err) {
     next(err);
   }
@@ -75,15 +92,15 @@ const updateUser = async (req, res, next) => {
 const desactivateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const user = await User.findOne({ where: { id: userId } });
+    const user = await findUser({ id: userId });
     if (!user) {
       throw new ApiError('User not found', 400);
     }
-    const updatedUser = await User.update({ where: { id: userId } }, {
-      active: false,
-    });
+    Object.assign(user, { active: false });
+    await user.save();
     res.json(new UserSerializer(null));
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };

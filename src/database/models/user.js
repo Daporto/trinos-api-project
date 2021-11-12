@@ -30,7 +30,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lastLoginDate: DataTypes.DATE,
+    lastLoginDate: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: null,
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
   }, {
     sequelize,
     modelName: 'User',
