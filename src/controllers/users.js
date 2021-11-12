@@ -93,14 +93,10 @@ const desactivateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const user = await findUser({ id: userId });
-    if (!user) {
-      throw new ApiError('User not found', 400);
-    }
     Object.assign(user, { active: false });
     await user.save();
     res.json(new UserSerializer(null));
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
