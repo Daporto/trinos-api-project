@@ -172,4 +172,15 @@ describe('Users routes', () => {
     expect(response.statusCode).toBe(400);
     expect(response.body.status).toBe('User not found');
   });
+  it('Should login with username and password', async () => {
+    const payload = {
+      username: 'myusername',
+      password: '12345',
+    };
+    const response = await request(app).post(`${USERS_PATH}/login`).send(payload);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.status).toBe('success');
+    expect(response.body.data.accessToken).not.toBeNull();
+  });
 });
