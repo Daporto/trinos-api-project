@@ -2,6 +2,8 @@ const {
   Model,
 } = require('sequelize');
 
+const { ROLES } = require('../../config/constants');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -37,6 +39,11 @@ module.exports = (sequelize, DataTypes) => {
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+    },
+    role: {
+      type: DataTypes.ENUM,
+      values: Object.values(ROLES),
+      defaultValue: ROLES.regular,
     },
   }, {
     sequelize,
