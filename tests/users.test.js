@@ -62,6 +62,8 @@ describe('Users routes', () => {
     expect(response.body.data.password).toBeUndefined();
     expect(response.body.data.passwordConfirmation).toBeUndefined();
     expect(response.body.data.active).toBeUndefined();
+
+    expect(response.body.paginationInfo).toBeNull();
   });
 
   it('Should return bad request on create user with invalid payload', async () => {
@@ -103,6 +105,8 @@ describe('Users routes', () => {
 
     expect(response.body.data.password).toBeUndefined();
     expect(response.body.data.active).toBeUndefined();
+
+    expect(response.body.paginationInfo).toBeNull();
   });
 
   it('Should return bad request when user does not exist', async () => {
@@ -145,6 +149,8 @@ describe('Users routes', () => {
 
     expect(response.body.data.password).toBeUndefined();
     expect(response.body.data.active).toBeUndefined();
+
+    expect(response.body.paginationInfo).toBeNull();
   });
 
   it('Should return unauthorized on update deactivated user', async () => {
@@ -222,6 +228,11 @@ describe('Users routes', () => {
     expect(response.body.status).toBe('success');
     expect(response.body.data.length).toBe(4);
 
+    expect(response.body.paginationInfo).not.toBeNull();
+    expect(response.body.paginationInfo.totalItems).toBe(4);
+    expect(response.body.paginationInfo.totalPages).toBe(1);
+    expect(response.body.paginationInfo.currentPage).toBe(1);
+
     expect(response.body.data[0].createdAt).not.toBeNull();
     expect(response.body.data[0].updatedAt).not.toBeNull();
     expect(response.body.data[0].lastLoginDate).toBeNull();
@@ -237,5 +248,27 @@ describe('Users routes', () => {
 
     expect(response.statusCode).toBe(403);
     expect(response.body.status).toBe('Role not authorized');
+  });
+  
+  it('Should go to next page on get all users', async () => {
+    const response = await request(app)
+      .get(`${USERS_PATH}/all?page=2&limit=2`)
+      .set('Authorization', `bearer ${adminUserAccessToken}`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.status).toBe('success');
+    expect(response.body.data.length).toBe(2);
+
+    expect(response.body.paginationInfo).not.toBeNull();
+    expect(response.body.paginationInfo.totalItems).toBe(4);
+    expect(response.body.paginationInfo.totalPages).toBe(2);
+    expect(response.body.paginationInfo.currentPage).toBe(2);
+
+    expect(response.body.data[0].createdAt).not.toBeNull();
+    expect(response.body.data[0].updatedAt).not.toBeNull();
+    expect(response.body.data[0].lastLoginDate).toBeNull();
+
+    expect(response.body.data[0].password).toBeUndefined();
+    expect(response.body.data[0].active).toBeUndefined();
   });
 });
