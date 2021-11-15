@@ -11,7 +11,7 @@ services:
       - .:/usr/src/app
     environment:
       DATABASE_URL: postgres://trinos_user:root_12345@db:5432/trinos
-      JWT_SECRET: a12bba32d5dceef6fbfa1551282cf85b8f477f0ac0241a948e09bd8895723ce6
+      JWT_SECRET: c4bc641b518b87c5c2f8a4471407ea58253e608c62003c04b39edd9b5147e4cf
     ports:
       - 3000:3000
     depends_on:
