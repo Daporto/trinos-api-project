@@ -1,17 +1,24 @@
-name: Assessment auto-review
+name: Build and Deploy
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+    - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: npm install
-      - name: Run linter
-        run: npm run linter
-      - name: Run tests
-        run: npm run test
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: $(basename $GITHUB_REPOSITORY)
+          heroku_email: ${{secrets.EMAIL}}
+          usedocker: true
+          docker_build_args: |
+            NODE_ENV
+        env:
+          NODE_ENV: production
+

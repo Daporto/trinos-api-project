@@ -11,6 +11,7 @@ const REGULAR_USER = (idx) => ({
   email: `user${idx}@test.com`,
   password: PASSWORD,
   active: true,
+  role: ROLES.regular,
   createdAt: new Date(),
   updatedAt: new Date(),
 });
@@ -31,6 +32,7 @@ const DEMO_USERS = [
     name: 'User deactivated',
     email: 'userdeactivated@test.com',
     password: PASSWORD,
+    role: ROLES.regular,
     active: false,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -40,6 +42,7 @@ const DEMO_USERS = [
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    console.log('roles:',DEMO_USERS);
     await queryInterface.bulkInsert('Users', DEMO_USERS);
   },
 
