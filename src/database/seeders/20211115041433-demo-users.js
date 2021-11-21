@@ -42,7 +42,6 @@ const DEMO_USERS = [
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    console.log('roles:',DEMO_USERS);
     await queryInterface.bulkInsert('Users', DEMO_USERS);
   },
 

@@ -249,7 +249,7 @@ describe('Users routes', () => {
     expect(response.statusCode).toBe(403);
     expect(response.body.status).toBe('Role not authorized');
   });
-  
+
   it('Should go to next page on get all users', async () => {
     const response = await request(app)
       .get(`${USERS_PATH}/all?page=2&limit=2`)
