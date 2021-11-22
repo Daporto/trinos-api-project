@@ -2,6 +2,7 @@ const { verifyAccessToken } = require('../services/jwt');
 const ApiError = require('../utils/ApiError');
 
 function authMiddleware(req, res, next) {
+  console.log("entraa");
   const accessToken = req.headers.authorization?.split(' ')[1];
 
   try {

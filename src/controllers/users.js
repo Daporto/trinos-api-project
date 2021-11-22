@@ -136,13 +136,13 @@ const loginUser = async (req, res, next) => {
     next(err);
   }
 };
-
 const updatePassword = async (req, res, next) => {
   try {
     const { body } = req;
     console.log(req.user);
     res.json({ data: 'dede' });
   } catch (err) {
+    console.log(err)
     next(err);
   }
 };
