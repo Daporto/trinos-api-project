@@ -11,6 +11,7 @@ const {
   getAllUsers,
 } = require('../controllers/users');
 
+
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const { paginationMiddleware } = require('../middlewares/paginationMiddleware');
 
