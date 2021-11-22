@@ -219,55 +219,75 @@ describe('Users routes', () => {
     expect(response.body.data.accessToken).not.toBeNull();
   });
 
+  it('Should return error on login with wrong password', async () => {
+    const payload = {
+      username: 'myusername',
+      password: '00000',
+    };
+    const response = await request(app).post(`${USERS_PATH}/login`).send(payload);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.status).toBe('User not found');
+  });
+
   it('Should admin role get all users', async () => {
     const response = await request(app)
       .get(`${USERS_PATH}/all`)
       .set('Authorization', `bearer ${adminUserAccessToken}`);
-
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('success');
     expect(response.body.data.length).toBe(4);
-
     expect(response.body.paginationInfo).not.toBeNull();
     expect(response.body.paginationInfo.totalItems).toBe(4);
     expect(response.body.paginationInfo.totalPages).toBe(1);
     expect(response.body.paginationInfo.currentPage).toBe(1);
-
     expect(response.body.data[0].createdAt).not.toBeNull();
     expect(response.body.data[0].updatedAt).not.toBeNull();
     expect(response.body.data[0].lastLoginDate).toBeNull();
-
     expect(response.body.data[0].password).toBeUndefined();
     expect(response.body.data[0].active).toBeUndefined();
   });
 
-  it('Should return unauthorized on get all users with regular role', async () => {
+  it('Should return unauthorized on get all users without auth token', async () => {
+    const response = await request(app)
+      .get(`${USERS_PATH}/all`);
+
+    expect(response.statusCode).toBe(401);
+    expect(response.body.status).toBe('Access token required');
+  });
+
+  it('Should return JWT error on get all users with malformed auth token', async () => {
+    const response = await request(app)
+      .get(`${USERS_PATH}/all`)
+      .set('Authorization', `bearer 12345`);
+
+    console.log(response.body)
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.status).toBe('jwt malformed');
+  });
+
+  it('Should return forbidden on get all users with regular role', async () => {
     const response = await request(app)
       .get(`${USERS_PATH}/all`)
       .set('Authorization', `bearer ${secondUserAccessToken}`);
-
     expect(response.statusCode).toBe(403);
     expect(response.body.status).toBe('Role not authorized');
   });
-
   it('Should go to next page on get all users', async () => {
     const response = await request(app)
       .get(`${USERS_PATH}/all?page=2&limit=2`)
       .set('Authorization', `bearer ${adminUserAccessToken}`);
-
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('success');
     expect(response.body.data.length).toBe(2);
-
     expect(response.body.paginationInfo).not.toBeNull();
     expect(response.body.paginationInfo.totalItems).toBe(4);
     expect(response.body.paginationInfo.totalPages).toBe(2);
     expect(response.body.paginationInfo.currentPage).toBe(2);
-
     expect(response.body.data[0].createdAt).not.toBeNull();
     expect(response.body.data[0].updatedAt).not.toBeNull();
     expect(response.body.data[0].lastLoginDate).toBeNull();
-
     expect(response.body.data[0].password).toBeUndefined();
     expect(response.body.data[0].active).toBeUndefined();
   });
