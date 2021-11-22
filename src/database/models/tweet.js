@@ -51,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    userId:{
+      type: DataTypes.INTEGER,
+      defaultValue:0,
+    },
   }, {
     sequelize,
     modelName: 'Tweet',

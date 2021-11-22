@@ -1,10 +1,11 @@
 const BaseSerializer = require('./BaseSerializer');
 
 class TweetSerializer extends BaseSerializer {
-  constructor(model,commentsData,userData) {
+  constructor(model, commentsData, userData) {
     const serializedModel = model ? model.toJSON() : null;
 
     delete serializedModel?.active;
+    delete serializedModel?.userId;
     
     serializedModel.user = userData;
     serializedModel.comments = commentsData;

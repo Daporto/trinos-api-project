@@ -19,10 +19,15 @@ const findTweet = async (where) => {
 const getAllTweets = async (req, res, next) => {
   try {
     //req.isRole(ROLES.admin);
+    
+    //where= { active: true };
 
     const tweets = await Tweet.findAll({ ...req.pagination });
- 
-    res.json(new TweetsSerializer(tweets, await req.getPaginationInfo(Tweet)));
+    
+    const commentsData = [];
+    const userData = {};
+
+    res.json(new TweetsSerializer(tweets, commentsData, userData, await req.getPaginationInfo(Tweet)));
   } catch (err) {
     next(err);
   }
@@ -51,7 +56,18 @@ const createTweet = async (req, res, next) => {
 };
 
 const getTweetById = async (req, res, next) => {
-  
+  try {
+    const { params } = req;
+
+    const tweet = await findTweet({ id: Number(params.id) });
+
+    const commentsData = [];
+    const userData = {};
+
+    res.json(new TweetSerializer(tweet,commentsData,userData));
+  } catch (err) {
+    next(err);
+  }
 };
 
 const getTweetFeedByUsername = async (req, res, next) => {
@@ -67,7 +83,26 @@ const createTweetComments = async (req, res, next) => {
 };
 
 const deleteTweetById = async (req, res, next) => {
-  
+  try {
+    const { params } = req;
+
+    const tweetId = Number(params.id);
+    //req.isUserAuthorized(userId);
+
+    const tweet = await findTweet({ id: tweetId });
+
+    Object.assign(tweet, { active: false });
+    if(tweet){
+      Tweet.destroy({ where: { id: tweetId } })
+    }
+    
+
+    //await tweet.save();
+
+    res.json(new TweetSerializer(null));
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = {

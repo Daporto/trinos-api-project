@@ -19,6 +19,10 @@ module.exports = {
       comments: {
         type: Sequelize.ARRAY
       }, */
+      userId: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       lastLoginDate: {
         type: Sequelize.DATE
       },

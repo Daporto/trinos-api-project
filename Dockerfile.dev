@@ -6,8 +6,6 @@ EXPOSE 3000
 
 RUN apt update && apt install -y python make g++
 
-RUN apt install git
-
 COPY ./package*.json ./
 
 RUN npm install
