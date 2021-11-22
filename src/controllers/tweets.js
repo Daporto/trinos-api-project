@@ -95,9 +95,6 @@ const deleteTweetById = async (req, res, next) => {
     if(tweet){
       Tweet.destroy({ where: { id: tweetId } })
     }
-    
-
-    //await tweet.save();
 
     res.json(new TweetSerializer(null));
   } catch (err) {

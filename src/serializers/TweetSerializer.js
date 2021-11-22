@@ -6,9 +6,11 @@ class TweetSerializer extends BaseSerializer {
 
     delete serializedModel?.active;
     delete serializedModel?.userId;
-    
-    serializedModel.user = userData;
-    serializedModel.comments = commentsData;
+
+    if(model){
+      serializedModel.user = userData;
+      serializedModel.comments = commentsData;
+    }
 
     super('success', serializedModel);
   }
