@@ -9,6 +9,7 @@ const {
   deactivateUser,
   loginUser,
   getAllUsers,
+  updatePassword,
 } = require('../controllers/users');
 
 const { authMiddleware } = require('../middlewares/authMiddleware');
@@ -23,4 +24,5 @@ router.get('/:id', getUserById);
 router.put('/:id', authMiddleware, updateUser);
 router.delete('/:id', authMiddleware, deactivateUser);
 
+router.post('/update_password', authMiddleware, updatePassword);
 module.exports = router;
