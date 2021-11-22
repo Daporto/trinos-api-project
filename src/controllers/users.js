@@ -34,6 +34,7 @@ const getAllUsers = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try {
+    console.log('aaaaaaaapp');
     const { body } = req;
 
     if (body.password !== body.passwordConfirmation) {
@@ -121,10 +122,11 @@ const deactivateUser = async (req, res, next) => {
 
 const loginUser = async (req, res, next) => {
   try {
+    console.log('********************************useer: ***********************************');
     const { body } = req;
 
     const user = await findUser({ username: body.username });
-
+    console.log("user: ", user)
     if (!(await user.comparePassword(body.password))) {
       throw new ApiError('User not found', 400);
     }
@@ -142,7 +144,7 @@ const updatePassword = async (req, res, next) => {
     console.log(req.user);
     res.json({ data: 'dede' });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     next(err);
   }
 };
