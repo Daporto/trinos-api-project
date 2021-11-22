@@ -11,7 +11,7 @@ const { ROLES } = require('../config/constants');
 
 const findUser = async (where) => {
   Object.assign(where, { active: true });
-  
+
   const user = await User.findOne({ where });
   if (!user) {
     throw new ApiError('User not found', 400);
@@ -25,7 +25,7 @@ const getAllUsers = async (req, res, next) => {
     req.isRole(ROLES.admin);
 
     const users = await User.findAll({ ...req.pagination });
- 
+
     res.json(new UsersSerializer(users, await req.getPaginationInfo(User)));
   } catch (err) {
     next(err);
@@ -136,7 +136,14 @@ const loginUser = async (req, res, next) => {
     next(err);
   }
 };
-
+const updatePassword = async (req, res, next) => {
+  try {
+    const { body } = req;
+    res.json({ data: 'dede' });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   createUser,
@@ -145,4 +152,5 @@ module.exports = {
   deactivateUser,
   loginUser,
   getAllUsers,
+  updatePassword,
 };
