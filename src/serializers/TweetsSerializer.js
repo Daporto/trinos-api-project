@@ -5,11 +5,15 @@ class TweetsSerializer extends BaseSerializer {
     const serializedModels = models.map((model) => {
       const serializedModel = model.toJSON();
 
+      serializedModel.user = userData.find(item => item.id === serializedModel.userId);
+      delete serializedModel.user.password;
+      delete serializedModel.user.active;
+      delete serializedModel.user.role;
+      
+      serializedModel.comments = commentsData;
+
       delete serializedModel?.active;
       delete serializedModel?.userId;
-
-      serializedModel.user = userData;
-      serializedModel.comments = commentsData;
 
       return serializedModel;
     });

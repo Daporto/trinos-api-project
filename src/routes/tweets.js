@@ -20,7 +20,7 @@ router.get("/",authMiddleware, paginationMiddleware, getAllTweets);
 
 router.get("/:id", getTweetById);
 
-router.get("/feed/:username", getTweetFeedByUsername);
+router.get("/feed/:username", paginationMiddleware, getTweetFeedByUsername);
 
 router.post("/", authMiddleware, createTweet);
 

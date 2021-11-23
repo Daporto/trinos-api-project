@@ -21,6 +21,10 @@ const findUser = async (where) => {
 
   const user = await User.findOne({ where });
 
+  if (!user) {
+    throw new ApiError('User not found', 400);
+  }
+
   return user;
 };
 
@@ -31,13 +35,21 @@ const getAllTweets = async (req, res, next) => {
     //where= { active: true };
 
     const { user } = req;
-    console.log(req);
-    console.log(user);
+    //console.log(req);
+    //console.log(user);
 
     const tweets = await Tweet.findAll({ ...req.pagination });
+
+    const users = await User.findAll();
     
     const commentsData = [];
-    const userData = {};
+    const userData = users.map((model) => {
+      const serializedModel = model.toJSON();
+
+      return serializedModel;
+    });
+
+    //console.log(userData.find(item => item.id === 1))
 
     res.json(new TweetsSerializer(tweets, commentsData, userData, await req.getPaginationInfo(Tweet)));
   } catch (err) {
@@ -51,15 +63,21 @@ const createTweet = async (req, res, next) => {
 
     const tweetPayload = {
       text: body.text,
+      userId: user.id,
     };
 
     if (Object.values(tweetPayload).some((val) => val === undefined)) {
       throw new ApiError('Payload must contain text', 400);
     }
 
+    objUser = await findUser({ id: user.id });
+
     const tweet = await Tweet.create(tweetPayload);
     const commentsData = [];
-    const userData = {};
+    const userData = objUser.toJSON();
+    delete userData?.password;
+    delete userData?.active;
+    delete userData?.role;
 
     res.json(new TweetSerializer(tweet,commentsData,userData));
   } catch (err) {
@@ -73,8 +91,13 @@ const getTweetById = async (req, res, next) => {
 
     const tweet = await findTweet({ id: Number(params.id) });
 
+    objUser = await findUser({ id: tweet.userId });
+
     const commentsData = [];
-    const userData = {};
+    const userData = objUser.toJSON();
+    delete userData?.password;
+    delete userData?.active;
+    delete userData?.role;
 
     res.json(new TweetSerializer(tweet,commentsData,userData));
   } catch (err) {
@@ -83,12 +106,35 @@ const getTweetById = async (req, res, next) => {
 };
 
 const getTweetFeedByUsername = async (req, res, next) => {
-  
+  try {
+    const { params } = req;
+
+    const objUser = await findUser({ username: params.username });
+    console.log(objUser);
+
+    const where = { userId: objUser.id }
+
+    const tweets = await Tweet.findAll({ where, ...req.pagination });
+
+
+    const users = await User.findAll();
+    
+    const commentsData = [];
+    const userData = users.map((model) => {
+      const serializedModel = model.toJSON();
+
+      return serializedModel;
+    });
+
+    res.json(new TweetsSerializer(tweets, commentsData, userData, await req.getPaginationInfo(Tweet)));
+  } catch (err) {
+    next(err);
+  }
 };
 
 const createLikeTweet = async (req, res, next) => {
   try {
-    const { params } = req;
+    const { params , user } = req;
 
     const tweetId = Number(params.id);
     //req.isUserAuthorized(userId);
@@ -99,8 +145,13 @@ const createLikeTweet = async (req, res, next) => {
 
     await tweet.save();
 
+    objUser = await findUser({ id: tweet.userId });
+    
     const commentsData = [];
-    const userData = {};
+    const userData = objUser.toJSON();
+    delete userData?.password;
+    delete userData?.active;
+    delete userData?.role;
 
     res.json(new TweetSerializer(tweet,commentsData,userData));
   } catch (err) {
