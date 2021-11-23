@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www",
+    "dev": "nodemon -L ./bin/www",
     "test": "jest",
     "db:seed:all": "cd ./src/database && sequelize db:seed:all",
     "db:seed:undo": "cd ./src/database && sequelize db:seed:undo",
