@@ -13,20 +13,21 @@ const {
   deleteTweetById,
 } = require('../controllers/tweets');
 
+const { authMiddleware } = require('../middlewares/authMiddleware');
 const { paginationMiddleware } = require('../middlewares/paginationMiddleware');
 
-router.get("/",paginationMiddleware,getAllTweets);
+router.get("/",authMiddleware, paginationMiddleware, getAllTweets);
 
-router.get("/:id",getTweetById);
+router.get("/:id", getTweetById);
 
-router.get("/feed/:username",getTweetFeedByUsername);
+router.get("/feed/:username", getTweetFeedByUsername);
 
-router.post("/",createTweet);
+router.post("/", authMiddleware, createTweet);
 
-router.post("/:id/likes",createLikeTweet);
+router.post("/:id/likes", authMiddleware, createLikeTweet);
 
-router.post("/:id/comments",createTweetComments);
+router.post("/:id/comments", authMiddleware, createTweetComments);
 
-router.delete("/:id",deleteTweetById);
+router.delete("/:id", authMiddleware, deleteTweetById);
 
 module.exports = router;

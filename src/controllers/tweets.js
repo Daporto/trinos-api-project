@@ -16,11 +16,23 @@ const findTweet = async (where) => {
   return tweet;
 };
 
+const findUser = async (where) => {
+  Object.assign(where, { active: true });
+
+  const user = await User.findOne({ where });
+
+  return user;
+};
+
 const getAllTweets = async (req, res, next) => {
   try {
     //req.isRole(ROLES.admin);
     
     //where= { active: true };
+
+    const { user } = req;
+    console.log(req);
+    console.log(user);
 
     const tweets = await Tweet.findAll({ ...req.pagination });
     
@@ -35,7 +47,7 @@ const getAllTweets = async (req, res, next) => {
 
 const createTweet = async (req, res, next) => {
   try {
-    const { body } = req;
+    const { body, user } = req;
 
     const tweetPayload = {
       text: body.text,
@@ -75,7 +87,25 @@ const getTweetFeedByUsername = async (req, res, next) => {
 };
 
 const createLikeTweet = async (req, res, next) => {
-  
+  try {
+    const { params } = req;
+
+    const tweetId = Number(params.id);
+    //req.isUserAuthorized(userId);
+
+    const tweet = await findTweet({ id: tweetId });
+
+    Object.assign(tweet, { likeCounter: tweet.likeCounter+1 });
+
+    await tweet.save();
+
+    const commentsData = [];
+    const userData = {};
+
+    res.json(new TweetSerializer(tweet,commentsData,userData));
+  } catch (err) {
+    next(err);
+  }
 };
 
 const createTweetComments = async (req, res, next) => {
