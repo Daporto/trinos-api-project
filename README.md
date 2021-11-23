@@ -6,6 +6,13 @@ Fork this project and modify the `./src/*` files in order to complete your asses
 
 Good luck!
 
+## Integrantes:
+```
+- Eddy Cardona -  Código: 200090597
+- Leider Pineda - Código: 200091432
+- Daniel Porto - Código: 200106512
+```
+
 ## Setup
 ```
 npm install
