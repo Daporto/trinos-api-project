@@ -62,9 +62,9 @@ const createUser = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   try {
     const { params } = req;
-
+    
     const user = await findUser({ id: Number(params.id) });
-
+    console.log(user)
     res.json(new UserSerializer(user));
   } catch (err) {
     next(err);
@@ -164,8 +164,13 @@ const sendPasswordReset = async (req, res, next) => {
   const { body } = req;
   let token = crypto.randomBytes(48);
   token = token.toString('hex');
-  console.log(token)
-  res.json(token)
+  const user = await findUser({ username: body.username });
+  userPayload = {
+    token
+  }
+  Object.assign(user, userPayload);
+  await user.save()
+  res.json(new UserSerializer(user));
   } catch (error) {
     next(error)
   }

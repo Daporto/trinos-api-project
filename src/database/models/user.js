@@ -54,6 +54,10 @@ module.exports = (sequelize, DataTypes) => {
       values: Object.values(ROLES),
       defaultValue: ROLES.regular,
     },
+    token: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
   }, {
     sequelize,
     modelName: 'User',
