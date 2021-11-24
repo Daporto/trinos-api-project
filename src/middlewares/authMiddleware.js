@@ -11,8 +11,8 @@ function authMiddleware(req, res, next) {
 
     const user = verifyAccessToken(accessToken);
 
-    const isRole = (role) => {
-      if (user.role !== role) {
+    const isRole = (allowedRoles) => {
+      if (!allowedRoles.includes(user.role)) {
         throw new ApiError('Role not authorized', 403);
       }
     };

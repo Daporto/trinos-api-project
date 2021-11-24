@@ -22,10 +22,8 @@ const findUser = async (where) => {
 
 const getAllUsers = async (req, res, next) => {
   try {
-    req.isRole(ROLES.admin);
-
+    req.isRole([ROLES.admin]);
     const users = await User.findAll({ ...req.pagination });
-
     res.json(new UsersSerializer(users, await req.getPaginationInfo(User)));
   } catch (err) {
     next(err);
@@ -138,12 +136,34 @@ const loginUser = async (req, res, next) => {
 };
 const updatePassword = async (req, res, next) => {
   try {
+    req.isRole([ROLES.admin, ROLES.regular]);
     const { body } = req;
-    res.json({ data: 'dede' });
+    if(!body.password || !body.passwordConfirmation){
+      throw new ApiError('body request have to contain password and passwordConfirmation', 400);
+    }
+    if (body.password !== body.passwordConfirmation) {
+      throw new ApiError('Passwords do not match', 400);
+    }
+    userPayload = {
+      password: body.password
+    }
+    const user = await findUser({ id: req.user.id });
+    console.log("user: ", user)
+    Object.assign(user, userPayload);
+    await user.save();
+    res.json(new UserSerializer(user));
   } catch (err) {
     next(err);
   }
 };
+
+const sendPasswordReset = async (req, res, next) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
 
 module.exports = {
   createUser,
