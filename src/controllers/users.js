@@ -9,6 +9,8 @@ const UsersSerializer = require('../serializers/UsersSerializer');
 
 const { ROLES } = require('../config/constants');
 
+var crypto = require('crypto');
+
 const findUser = async (where) => {
   Object.assign(where, { active: true });
 
@@ -159,9 +161,13 @@ const updatePassword = async (req, res, next) => {
 
 const sendPasswordReset = async (req, res, next) => {
   try {
-    
+  const { body } = req;
+  let token = crypto.randomBytes(48);
+  token = token.toString('hex');
+  console.log(token)
+  res.json(token)
   } catch (error) {
-    
+    next(error)
   }
 }
 
@@ -173,4 +179,5 @@ module.exports = {
   loginUser,
   getAllUsers,
   updatePassword,
+  sendPasswordReset
 };

@@ -10,6 +10,7 @@ const {
   loginUser,
   getAllUsers,
   updatePassword,
+  sendPasswordReset
 } = require('../controllers/users');
 
 const { authMiddleware } = require('../middlewares/authMiddleware');
@@ -25,5 +26,5 @@ router.put('/:id', authMiddleware, updateUser);
 router.delete('/:id', authMiddleware, deactivateUser);
 
 router.post('/update_password', authMiddleware, updatePassword);
-
+router.post('/send_password_reset', sendPasswordReset);
 module.exports = router;
