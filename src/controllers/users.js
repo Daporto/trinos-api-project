@@ -166,9 +166,8 @@ const sendPasswordReset = async (req, res, next) => {
   const { body } = req;
 
   const user = await findUser({ username: body.username });
-  const token = generateAccessToken(user.id, user.role);
-  //let token = crypto.randomBytes(48);
-  //token = token.toString('hex');
+  let token = crypto.randomBytes(48);
+  token = token.toString('hex');
   userPayload = {
     token
   }
