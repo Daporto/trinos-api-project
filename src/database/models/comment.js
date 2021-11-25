@@ -23,21 +23,21 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue:0,
     },
     active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-      },
-      tweetId:{
-          type: DataTypes.INTEGER,
-          defaultValue:0,
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: null,
-      },
-      updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: null,
-      },
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    tweetId:{
+      type: DataTypes.INTEGER,
+      defaultValue:0,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: null,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: null,
+    },
   }, {
     sequelize,
     modelName: 'Comment',

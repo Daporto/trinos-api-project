@@ -160,30 +160,6 @@ const createLikeTweet = async (req, res, next) => {
   }
 };
 
-const createTweetComments = async (req, res, next) => {
-  try {
-    const { body, params} = req;
-    console.log("tweet data: ",{params});
-    const commentPayload = {
-      text: body.text,
-      tweetId: params.id,
-    };
-
-    if (Object.values(commentPayload).some((val) => val === undefined)) {
-      throw new ApiError('Payload must contain text', 400);
-    }
-    
-    console.log("data:",commentPayload);
-    objtweet = await findTweet({ id: params.id })
-    const comment = await Comment.create(commentPayload);
-    objuser = await findUser({ id: Tweet.userId })
-    const userData = objuser.toJSON();
-    res.json(new TweetSerializer(objtweet,comment, userData));
-  } catch (err) {
-    next(err);
-  }
-};
-
 const deleteTweetById = async (req, res, next) => {
   try {
     const { params } = req;
@@ -210,6 +186,5 @@ module.exports = {
   getTweetById,
   getTweetFeedByUsername,
   createLikeTweet,
-  createTweetComments,
   deleteTweetById,
 };
