@@ -1,3 +1,6 @@
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const { truncate } = require('fs');
 const ApiError = require('../utils/ApiError');
 const { verifyAccessToken } = require('../services/jwt');
 
@@ -9,10 +12,6 @@ const AuthSerializer = require('../serializers/AuthSerializer');
 const UsersSerializer = require('../serializers/UsersSerializer');
 
 const { ROLES } = require('../config/constants');
-
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const { truncate } = require('fs');
 
 const findUser = async (where) => {
   Object.assign(where, { active: true });
@@ -77,7 +76,7 @@ const getUserById = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const { params, body } = req;
-    
+
     const userId = Number(params.id);
     req.isUserAuthorized(userId);
 
@@ -161,28 +160,46 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
+const sendemail = async (email, token) => {
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'testing.development.max@gmail.com',
+      pass: 'Test1234!',
+    },
+  });
+
+  const info = await transporter.sendMail({
+    from: '"Equipo trinos-api" daporto@uninorte.edu.co',
+    to: email,
+    subject: 'Cambio de contraseña',
+    text: 'Hola recibe un cordial saludo, este es tu token para cambio de contraseña: ', // plain text body
+    html: `<b>Hola recibe un cordial saludo, este es tu token para cambio de contraseña: ${token}</b>`, // html body
+  });
+};
+
 const sendPasswordReset = async (req, res, next) => {
   try {
-  const { body } = req;
+    const { body } = req;
 
-  const user = await findUser({ username: body.username });
-  const token = generateAccessToken(user.id, user.role);
-  //let token = crypto.randomBytes(48);
-  //token = token.toString('hex');
-  userPayload = {
-    token
-  }
-  Object.assign(user, userPayload);
-  await user.save()
-  await sendemail(user.email, token)
-  res.json(new UserSerializer(user));
+    const user = await findUser({ username: body.username });
+    const token = generateAccessToken(user.id, user.role);
+    // let token = crypto.randomBytes(48);
+    // token = token.toString('hex');
+    const userPayload = {
+      token,
+    };
+    Object.assign(user, userPayload);
+    await user.save();
+    await sendemail(user.email, token);
+    res.json(new UserSerializer(user));
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 const resetPassword = async (req, res, next) => {
-  const {body} = req;
+  const { body } = req;
   if (!body.password || !body.passwordConfirmation || !body.token) {
     throw new ApiError('body request have to contain password, passwordConfirmation and token', 400);
   }
@@ -192,33 +209,11 @@ const resetPassword = async (req, res, next) => {
   const user = await findUser({ token: body.token });
   const userPayload = {
     password: body.password,
-  }
+  };
   Object.assign(user, userPayload);
   await user.save();
   res.json(new UserSerializer(user));
-}
-
-const sendemail = async (email, token)=>{
-  console.log("email: ",email);
-  console.log("token: ",token)
-
-  let transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      user: "testing.development.max@gmail.com",
-      pass: "Test1234!",
-    },
-  });
-
-  let info = await transporter.sendMail({
-    from: '"Equipo trinos-api" daporto@uninorte.edu.co',
-    to: email,
-    subject: "Cambio de contraseña",
-    text: "Hola recibe un cordial saludo, este es tu token para cambio de contraseña: ", // plain text body
-    html: "<b>Hola recibe un cordial saludo, este es tu token para cambio de contraseña: "+ token +"</b>" // html body
-  });
-}
-
+};
 
 module.exports = {
   createUser,
@@ -229,5 +224,5 @@ module.exports = {
   getAllUsers,
   updatePassword,
   sendPasswordReset,
-  resetPassword
+  resetPassword,
 };

@@ -4,7 +4,7 @@ const { User, Tweet, Comment } = require('../database/models');
 
 const TweetSerializer = require('../serializers/TweetSerializer');
 const TweetsSerializer = require('../serializers/TweetsSerializer');
-//const user = require('../database/models/user');
+// const user = require('../database/models/user');
 
 const findTweet = async (where) => {
   Object.assign(where, { active: true });
@@ -49,7 +49,7 @@ const getAllTweets = async (req, res, next) => {
       const serializedModel = model.toJSON();
 
       delete serializedModel?.active;
-      
+
       return serializedModel;
     });
 
@@ -110,7 +110,7 @@ const getTweetById = async (req, res, next) => {
       const serializedModel = model.toJSON();
 
       delete serializedModel?.active;
-      
+
       return serializedModel;
     });
 
@@ -143,7 +143,7 @@ const getTweetFeedByUsername = async (req, res, next) => {
       const serializedModel = model.toJSON();
 
       delete serializedModel?.active;
-      
+
       return serializedModel;
     });
 
@@ -181,10 +181,10 @@ const createLikeTweet = async (req, res, next) => {
       const serializedModel = model.toJSON();
 
       delete serializedModel?.active;
-      
+
       return serializedModel;
     });
-    
+
     const userData = objUser.toJSON();
     delete userData?.password;
     delete userData?.active;

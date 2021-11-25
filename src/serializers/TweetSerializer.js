@@ -12,9 +12,9 @@ class TweetSerializer extends BaseSerializer {
 
       const commentsD = commentsData.filter((item) => item.tweetId === serializedModel.id);
 
-      if(commentsD){
+      if (commentsD) {
         serializedModel.comments = commentsD;
-      }else{
+      } else {
         serializedModel.comments = [];
       }
     }
