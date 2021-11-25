@@ -34,4 +34,4 @@ npm run linter
 ```
 
 ## Test and coverage
-![This is an image](./Test and coverage.png)
+![test and coverage](https://firebasestorage.googleapis.com/v0/b/images-hosting-84deb.appspot.com/o/Test%20and%20coverage.png?alt=media&token=07451905-003a-478f-bdf5-40284a37fbc2)
