@@ -4,7 +4,7 @@ const { User, Tweet, Comment } = require('../database/models');
 
 const TweetSerializer = require('../serializers/TweetSerializer');
 const TweetsSerializer = require('../serializers/TweetsSerializer');
-const user = require('../database/models/user');
+//const user = require('../database/models/user');
 
 const findTweet = async (where) => {
   Object.assign(where, { active: true });
@@ -43,7 +43,16 @@ const getAllTweets = async (req, res, next) => {
 
     const users = await User.findAll();
 
-    const commentsData = [];
+    const comments = await Comment.findAll();
+
+    const commentsData = comments.map((model) => {
+      const serializedModel = model.toJSON();
+
+      delete serializedModel?.active;
+      
+      return serializedModel;
+    });
+
     const userData = users.map((model) => {
       const serializedModel = model.toJSON();
 
@@ -61,18 +70,18 @@ const getAllTweets = async (req, res, next) => {
 
 const createTweet = async (req, res, next) => {
   try {
-    const { body, usert } = req;
+    const { body, user } = req;
 
     const tweetPayload = {
       text: body.text,
-      userId: usert.id,
+      userId: user.id,
     };
 
     if (Object.values(tweetPayload).some((val) => val === undefined)) {
       throw new ApiError('Payload must contain text', 400);
     }
 
-    const objUser = await findUser({ id: usert.id });
+    const objUser = await findUser({ id: user.id });
 
     const tweet = await Tweet.create(tweetPayload);
     const commentsData = [];
