@@ -10,7 +10,7 @@ const {
   loginUser,
   getAllUsers,
   updatePassword,
-  sendPasswordReset
+  sendPasswordReset,
 } = require('../controllers/users');
 
 const { authMiddleware } = require('../middlewares/authMiddleware');
