@@ -18,6 +18,7 @@ function authMiddleware(req, res, next) {
     };
 
     const isUserAuthorized = (userId) => {
+      console.log("userId, ", user.id);
       if (user.id !== userId) {
         throw new ApiError('User not authorized', 403);
       }
