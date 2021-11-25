@@ -64,9 +64,9 @@ const createUser = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   try {
     const { params } = req;
-    
+
     const user = await findUser({ id: Number(params.id) });
-    console.log(user)
+
     res.json(new UserSerializer(user));
   } catch (err) {
     next(err);
@@ -142,17 +142,16 @@ const updatePassword = async (req, res, next) => {
   try {
     req.isRole([ROLES.admin, ROLES.regular]);
     const { body } = req;
-    if(!body.password || !body.passwordConfirmation){
+    if (!body.password || !body.passwordConfirmation) {
       throw new ApiError('body request have to contain password and passwordConfirmation', 400);
     }
     if (body.password !== body.passwordConfirmation) {
       throw new ApiError('Passwords do not match', 400);
     }
-    userPayload = {
-      password: body.password
-    }
+    const userPayload = {
+      password: body.password,
+    };
     const user = await findUser({ id: req.user.id });
-    console.log("user: ", user)
     Object.assign(user, userPayload);
     await user.save();
     res.json(new UserSerializer(user));
@@ -210,5 +209,5 @@ module.exports = {
   loginUser,
   getAllUsers,
   updatePassword,
-  sendPasswordReset
+  sendPasswordReset,
 };

@@ -259,9 +259,9 @@ describe('Users routes', () => {
   it('Should return JWT error on get all users with malformed auth token', async () => {
     const response = await request(app)
       .get(`${USERS_PATH}/all`)
-      .set('Authorization', `bearer 12345`);
+      .set('Authorization', 'bearer 12345');
 
-    console.log(response.body)
+    console.log(response.body);
 
     expect(response.statusCode).toBe(400);
     expect(response.body.status).toBe('jwt malformed');

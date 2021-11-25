@@ -7,9 +7,16 @@ class TweetSerializer extends BaseSerializer {
     delete serializedModel?.active;
     delete serializedModel?.userId;
 
-    if(model){
+    if (model) {
       serializedModel.user = userData;
-      serializedModel.comments = commentsData;
+
+      const commentsD = commentsData.filter((item) => item.tweetId === serializedModel.id);
+
+      if(commentsD){
+        serializedModel.comments = commentsD;
+      }else{
+        serializedModel.comments = [];
+      }
     }
 
     super('success', serializedModel);
