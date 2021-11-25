@@ -182,16 +182,16 @@ const sendPasswordReset = async (req, res, next) => {
   try {
     const { body } = req;
 
-  const user = await findUser({ username: body.username });
-  let token = crypto.randomBytes(48);
-  token = token.toString('hex');
-  userPayload = {
-    token
-  }
-  Object.assign(user, userPayload);
-  await user.save()
-  await sendemail(user.email, token)
-  res.json(new UserSerializer(user));
+    const user = await findUser({ username: body.username });
+    let token = crypto.randomBytes(48);
+    token = token.toString('hex');
+    const userPayload = {
+      token,
+    };
+    Object.assign(user, userPayload);
+    await user.save();
+    await sendemail(user.email, token);
+    res.json(new UserSerializer(user));
   } catch (error) {
     next(error);
   }

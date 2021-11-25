@@ -33,4 +33,5 @@ npm run test
 npm run linter
 ```
 
-## testing
+## Test and coverage
+![This is an image](./Test and coverage.png)

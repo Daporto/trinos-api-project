@@ -4,8 +4,6 @@ const { Tweet, Comment } = require('../database/models');
 
 const CommentSerializer = require('../serializers/CommentSerializer');
 
-const CommentsSerializer = require('../serializers/CommentsSerializer');
-
 const findTweet = async (where) => {
   Object.assign(where, { active: true });
   const tweet = await Tweet.findOne({ where });
