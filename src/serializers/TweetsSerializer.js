@@ -10,7 +10,7 @@ class TweetsSerializer extends BaseSerializer {
       delete serializedModel.user.active;
       delete serializedModel.user.role;
 
-      const commentsD = ($filter('filter')(commentsData, {tweetId: serializedModel.id })); //commentsData.find((item) => item.tweetId === serializedModel.id);
+      const commentsD = commentsData.filter((item) => item.tweetId === serializedModel.id);
 
       if(commentsD){
         serializedModel.comments = commentsD;

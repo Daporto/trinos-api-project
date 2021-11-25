@@ -104,7 +104,16 @@ const getTweetById = async (req, res, next) => {
 
     const objUser = await findUser({ id: tweet.userId });
 
-    const commentsData = [];
+    const comments = await Comment.findAll();
+
+    const commentsData = comments.map((model) => {
+      const serializedModel = model.toJSON();
+
+      delete serializedModel?.active;
+      
+      return serializedModel;
+    });
+
     const userData = objUser.toJSON();
     delete userData?.password;
     delete userData?.active;
@@ -128,7 +137,16 @@ const getTweetFeedByUsername = async (req, res, next) => {
 
     const users = await User.findAll();
 
-    const commentsData = [];
+    const comments = await Comment.findAll();
+
+    const commentsData = comments.map((model) => {
+      const serializedModel = model.toJSON();
+
+      delete serializedModel?.active;
+      
+      return serializedModel;
+    });
+
     const userData = users.map((model) => {
       const serializedModel = model.toJSON();
 
@@ -157,7 +175,16 @@ const createLikeTweet = async (req, res, next) => {
 
     const objUser = await findUser({ id: tweet.userId });
 
-    const commentsData = [];
+    const comments = await Comment.findAll();
+
+    const commentsData = comments.map((model) => {
+      const serializedModel = model.toJSON();
+
+      delete serializedModel?.active;
+      
+      return serializedModel;
+    });
+    
     const userData = objUser.toJSON();
     delete userData?.password;
     delete userData?.active;
