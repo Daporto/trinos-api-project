@@ -9,6 +9,8 @@ const UsersSerializer = require('../serializers/UsersSerializer');
 
 const { ROLES } = require('../config/constants');
 
+var crypto = require('crypto');
+
 const findUser = async (where) => {
   Object.assign(where, { active: true });
 
@@ -60,9 +62,9 @@ const createUser = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   try {
     const { params } = req;
-
+    
     const user = await findUser({ id: Number(params.id) });
-
+    console.log(user)
     res.json(new UserSerializer(user));
   } catch (err) {
     next(err);
@@ -159,9 +161,18 @@ const updatePassword = async (req, res, next) => {
 
 const sendPasswordReset = async (req, res, next) => {
   try {
-    
+  const { body } = req;
+  let token = crypto.randomBytes(48);
+  token = token.toString('hex');
+  const user = await findUser({ username: body.username });
+  userPayload = {
+    token
+  }
+  Object.assign(user, userPayload);
+  await user.save()
+  res.json(new UserSerializer(user));
   } catch (error) {
-    
+    next(error)
   }
 }
 
@@ -173,4 +184,5 @@ module.exports = {
   loginUser,
   getAllUsers,
   updatePassword,
+  sendPasswordReset
 };
