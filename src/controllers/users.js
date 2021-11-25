@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const ApiError = require('../utils/ApiError');
 
 const { User } = require('../database/models');
@@ -63,6 +62,7 @@ const getUserById = async (req, res, next) => {
     const { params } = req;
 
     const user = await findUser({ id: Number(params.id) });
+
     res.json(new UserSerializer(user));
   } catch (err) {
     next(err);
@@ -157,20 +157,7 @@ const updatePassword = async (req, res, next) => {
 };
 
 const sendPasswordReset = async (req, res, next) => {
-  try {
-    const { body } = req;
-    let token = crypto.randomBytes(48);
-    token = token.toString('hex');
-    const user = await findUser({ username: body.username });
-    const userPayload = {
-      token,
-    };
-    Object.assign(user, userPayload);
-    await user.save();
-    res.json(new UserSerializer(user));
-  } catch (error) {
-    next(error);
-  }
+
 };
 
 module.exports = {

@@ -16,7 +16,7 @@ const {
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const { paginationMiddleware } = require('../middlewares/paginationMiddleware');
 
-router.get('/', authMiddleware, paginationMiddleware, getAllUsers);
+router.get('/all', authMiddleware, paginationMiddleware, getAllUsers);
 
 router.post('/', createUser);
 router.post('/login', loginUser);
