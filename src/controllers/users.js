@@ -1,4 +1,5 @@
 const ApiError = require('../utils/ApiError');
+const { verifyAccessToken } = require('../services/jwt');
 
 const { User } = require('../database/models');
 const { generateAccessToken } = require('../services/jwt');
@@ -163,9 +164,11 @@ const updatePassword = async (req, res, next) => {
 const sendPasswordReset = async (req, res, next) => {
   try {
   const { body } = req;
-  let token = crypto.randomBytes(48);
-  token = token.toString('hex');
+
   const user = await findUser({ username: body.username });
+  const token = generateAccessToken(user.id, user.role);
+  //let token = crypto.randomBytes(48);
+  //token = token.toString('hex');
   userPayload = {
     token
   }
@@ -173,10 +176,26 @@ const sendPasswordReset = async (req, res, next) => {
   await user.save()
   await sendemail(user.email, token)
   res.json(new UserSerializer(user));
-
   } catch (error) {
     next(error)
   }
+}
+
+const resetPassword = async (req, res, next) => {
+  const {body} = req;
+  if (!body.password || !body.passwordConfirmation || !body.token) {
+    throw new ApiError('body request have to contain password, passwordConfirmation and token', 400);
+  }
+  if (body.password !== body.passwordConfirmation) {
+    throw new ApiError('Passwords do not match', 400);
+  }
+  const user = await findUser({ token: body.token });
+  const userPayload = {
+    password: body.password,
+  }
+  Object.assign(user, userPayload);
+  await user.save();
+  res.json(new UserSerializer(user));
 }
 
 const sendemail = async (email, token)=>{
@@ -210,4 +229,5 @@ module.exports = {
   getAllUsers,
   updatePassword,
   sendPasswordReset,
+  resetPassword
 };

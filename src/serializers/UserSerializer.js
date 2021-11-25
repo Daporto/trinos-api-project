@@ -6,6 +6,8 @@ class UserSerializer extends BaseSerializer {
 
     delete serializedModel?.password;
     delete serializedModel?.active;
+    delete serializedModel?.token;
+    delete serializedModel?.role;
 
     super('success', serializedModel);
   }
